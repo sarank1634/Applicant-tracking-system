@@ -23,16 +23,11 @@ export default function Home() {
     </section>
 
     {resumes.length > 0 && (
-      <div className="resume-section">
+      <div className="resumes-section">
         {resumes.map((resume) => (
           <ResumeCard 
             key={resume.id} 
-            id={resume.id}
-            companyName={resume.companyName}
-            jobTitle={resume.jobTitle}
-            feedback={resume.feedback}
-            imagePath={resume.imagePath}
-            resumePath={resume.resumePath}
+            resume={resume}
           />
         ))}
       </div>
