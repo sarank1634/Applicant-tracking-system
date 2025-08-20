@@ -9,7 +9,8 @@ const ResumeCard = ({resume}: {resume: {id, companyName, jobTitle}}) => {
         </div>
           <div className='flex-shirnk-0'>
 
-            
+  <img src={resume.imagePath} alt="" className='w-full border rounded-lg shadow-sm' />           
+  
           </div>
     </Link>
   );
