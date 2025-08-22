@@ -1,14 +1,16 @@
+import { prepareInstructions } from 'constants'
 import React, { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import FileUploader from '~/components/FileUploader'
 import Navbar from '~/components/Navbar'
 import { convertPdfToImage } from '~/lib/pdfToImage'
 import { usePuterStore } from '~/lib/puter'
+import { generateUUID } from '~/lib/utils'
 
 
 
 const upload = () => {
-   const { auth, isLoading, fs, ai , kv} = usePuterStore();
+   const { auth, isLoading, fs, ai ,kv} = usePuterStore();
    const naviagate = useNavigate();
    const[isPorcessing, setProcessing] = useState(false);
    const[statusText, setStatusText] = useState('');
@@ -18,17 +20,50 @@ const upload = () => {
     setFile( file)
    } 
    
-   const handleAnalyze = async ({companyName, jobTitle, jobDesscription, file}: {companyName: string, jobTitle: String, jobDesscription: String, file: File }) => {
+   const handleAnalyze = async ({companyName, jobTitle, jobDescription, file}: {companyName: string, jobTitle: string, jobDescription: string, file: File }) => {
        setProcessing(true);
-       setStatusText('Uploading the file ...');
 
+
+       setStatusText('Uploading the file ...');
        const uploadedFile = await fs.upload([file]);
        if(!uploadedFile) return setStatusText("Error : Failed to upload file");
 
        setStatusText("convert to image ...");
        const imageFile = await convertPdfToImage(file);
-       if(!imageFile.file) return setStatusText('Error: Failed to Convert PDF to image');
+       if(!imageFile.file || imageFile.error) {
+         return setStatusText(`Error: ${imageFile.error || 'Failed to Convert PDF to image'}`);
+       }
+       
+       setStatusText('uploading the image...');
+       const uploadedImage = await fs.upload([imageFile.file]);
+       if(!uploadedImage) return setStatusText("Error : Failed to upload image");
+       
+       setStatusText('Preparing data ...')
 
+       const uuid = generateUUID();
+       const data = {
+         id: uuid,
+         resumePath: uploadedFile.path,
+         imagePath: uploadedImage.path,
+         companyName, jobTitle, jobDescription,
+         feedback: '',
+       }
+       await kv.set(`resume:${uuid}`, JSON.stringify(data));
+       setStatusText('Analysis completed, redirecting... ');
+       console.log(data);
+    
+       setStatusText('Analyzing ...');
+
+       const feedback = await ai.feedback(
+          uploadedFile.path,
+          prepareInstructions({jobTitle, jobDescription})
+       )
+
+       if(feedback) return setStatusText('Error: Failed to analyz resume');
+
+       const feedbackText = typeof feedback.message.content === 'string'
+            ? feedback.message.content
+            : feedback.message.content[0].text;
    }
 
    const handleSubmit = (e: FormEvent<HTMLFormElement >) => {
@@ -37,13 +72,13 @@ const upload = () => {
      if(!form) return;
      const formData = new FormData(form);
 
-     const companyName = formData.get('company-name');
-     const jobTitle = formData.get('job-title');
-     const jobDescription = formData.get('job-description')as string;
+     const companyName = formData.get('company-name') as string;
+     const jobTitle = formData.get('job-title') as string;
+     const jobDescription = formData.get('job-description') as string;
      
       if(!file) return;
 
-      handleAnalyze({companyName, jobTitle, jobDesscription, file});
+      handleAnalyze({companyName, jobTitle, jobDescription, file});
 
 
 
@@ -77,7 +112,7 @@ const upload = () => {
                     </div>
                     <div className="form-div">
                         <label htmlFor="job-description">Job description</label>
-                        <textarea rows={5} name='job-description' placeholder='Job Description' id='job-Description' />
+                        <textarea rows={5} name='job-description' placeholder='Job Description' id='job-description' />
                     </div>
                     <div className="form-div">
                         <label htmlFor="uploader">Uploader Resume</label>
