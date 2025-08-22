@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router'
+import { usePuterStore } from '~/lib/puter'
 
 export const meta = () => ([
     {title: 'Resumind | Auth'},
@@ -6,9 +8,16 @@ export const meta = () => ([
 ])
  
 const auth = () => {
+    const {isLoading, auth} = usePuterStore();
+    const location = useLocation();
+    const next = location.search.split('next=')[1];
+    const navigate = useNavigate();
 
-    
-  return (
+useEffect(() => {
+if(auth.isAuthenticated) navigate(next);
+}, [auth.isAuthendicated, next]);
+   
+   return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen flex items-center justify-center">
       <div className="gradient-b shadow-lg"></div>
       <section className='flex flex-col items-center gap-8 bg-white rounded-2xl p-10'>
@@ -17,7 +26,24 @@ const auth = () => {
             <p>Log in to Continue Your Job Journey</p>
         </div>
       </section>
+       {isLoading ? (
+        <button className='auth-button animated-pluse'>
+            <p>Signing you in ...</p>
+        </button>
+       ) : (
+        <>
+        {auth.isAutjenticated ? (
+           <button className='auth-button' onClick={auth.signOut}>
+            Log Out
+           </button> 
+        ): (
+            <button className='auth-button' onClick={auth.signIn}>
+                <p>Log in</p>
+            </button>
+        )}
+        </>
 
+       )}
     </main>
   )
 }
