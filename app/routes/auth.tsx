@@ -8,14 +8,19 @@ export const meta = () => ([
 ])
  
 const auth = () => {
-    const {isLoading, auth} = usePuterStore();
+    const {isLoading, auth, puterReady} = usePuterStore();
     const location = useLocation();
-    const next = location.search.split('next=')[1];
+    const searchParams = new URLSearchParams(location.search);
+    const next = searchParams.get('next') || '/';
     const navigate = useNavigate();
 
 useEffect(() => {
-if(auth.isAuthenticated) navigate(next);
-}, [auth.isAuthenticated, next]);
+    console.log('Puter ready:', puterReady, 'Auth state:', auth.isAuthenticated);
+    if(puterReady && auth.isAuthenticated && !isLoading) {
+        console.log('Navigating to:', next);
+        navigate(next, { replace: true });
+    }
+}, [puterReady, auth.isAuthenticated, isLoading, next, navigate]);
    
    return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen flex items-center justify-center">
@@ -26,11 +31,10 @@ if(auth.isAuthenticated) navigate(next);
             <p>Log in to Continue Your Job Journey</p>
         </div>
       </section>
-       {isLoading ? (
-        <button className='auth-button animated-pluse'>
-            <p>Signing you in ...</p>
-        </button>
-       ) : (
+      {isLoading ? (
+          <button className='auth-button animated-pluse'>
+            Signing you in ...</button>
+      ) : (
         <>
         {auth.isAuthenticated ? (
            <button className='auth-button' onClick={auth.signOut}>
@@ -42,11 +46,10 @@ if(auth.isAuthenticated) navigate(next);
             </button>
         )}
         </>
-
-       )}
+      )}
        </div>
     </main>
   )
 }
 
-export default auth
+export default auth;

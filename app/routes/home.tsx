@@ -15,13 +15,41 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
 
-  const { auth} = usePuterStore();
+  const { auth, puterReady, isLoading } = usePuterStore();
   const navigate = useNavigate();
 
 useEffect(() => {
-if(!auth.isAuthenticated) navigate('/auth?next=/');
-}, [auth.isAuthenticated]);
+  console.log('Home useEffect - puterReady:', puterReady, 'isLoading:', isLoading, 'isAuthenticated:', auth.isAuthenticated);
+  
+  if (puterReady && !isLoading && !auth.isAuthenticated) {
+    console.log('Redirecting to auth from home page');
+    navigate('/auth?next=/', { replace: true });
+  }
+}, [puterReady, isLoading, auth.isAuthenticated, navigate]);
 
+
+  // Show loading state while Puter is initializing
+  if (!puterReady || isLoading) {
+    return (
+      <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </main>
+    );
+  }
+
+  // If not authenticated after initialization, this will be handled by useEffect redirect
+  if (!auth.isAuthenticated) {
+    return (
+      <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Redirecting to login...</p>
+        </div>
+      </main>
+    );
+  }
 
   return(
    <main className="bg-[url('/images/bg-main.svg')] bg-cover " >
