@@ -1,4 +1,5 @@
 import React, { useState, type FormEvent } from 'react'
+import FileUploader from '~/components/FileUploader'
 import Navbar from '~/components/Navbar'
 
 
@@ -26,7 +27,7 @@ const upload = () => {
             ):(
                 <h2>Drop your resume for an ATS score and improvement tips</h2>
             )}
-            {!is Processing && (
+            {!isPorcessing && (
 
                 <form id="upload -form" onSubmit={handleSubmit} className='flex flex-col gap-4 mt-8'>
                     <div className="form-div">
@@ -34,11 +35,22 @@ const upload = () => {
                         <input type="text" name='company-name' placeholder='Company Name' id='company-name' />
                     </div>
                     <div className="form-div">
-                        <label htmlFor="job-title">Company Name</label>
+                        <label htmlFor="job-title">Job Title</label>
                         <input type="text" name='job-title' placeholder='Job Title' id='job-title' />
                     </div>
-                </form>
+                    <div className="form-div">
+                        <label htmlFor="job-description">Job description</label>
+                        <textarea rows={5} name='job-description' placeholder='Job Description' id='job-Description' />
+                    </div>
+                    <div className="form-div">
+                        <label htmlFor="uploader">Uploader Resume</label>
+                        <FileUploader />
+                    </div>
 
+                    <button className='primary-button' type='submit'>
+                        Analyze Resume
+                    </button>
+                </form>
             )}
         </div>
     </section>
