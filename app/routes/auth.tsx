@@ -15,7 +15,7 @@ const auth = () => {
 
 useEffect(() => {
 if(auth.isAuthenticated) navigate(next);
-}, [auth.isAuthendicated, next]);
+}, [auth.isAuthenticated, next]);
    
    return (
     <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen flex items-center justify-center">
@@ -32,7 +32,7 @@ if(auth.isAuthenticated) navigate(next);
         </button>
        ) : (
         <>
-        {auth.isAutjenticated ? (
+        {auth.isAuthenticated ? (
            <button className='auth-button' onClick={auth.signOut}>
             Log Out
            </button> 

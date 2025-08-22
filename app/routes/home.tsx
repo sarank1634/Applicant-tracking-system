@@ -20,7 +20,7 @@ export default function Home() {
 
 useEffect(() => {
 if(!auth.isAuthenticated) navigate('/auth?next=/');
-}, [auth.isAuthendicated]);
+}, [auth.isAuthenticated]);
 
 
   return(
