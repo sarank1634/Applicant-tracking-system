@@ -4,7 +4,7 @@ import Navbar from '~/components/Navbar'
 
 
 const upload = () => {
-   const[isPorcessing, setProcessing] = useState(true)
+   const[isPorcessing, setProcessing] = useState(false)
    const[statusText, setStatusText] = useState('')
 
 
