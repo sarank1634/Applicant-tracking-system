@@ -1,7 +1,13 @@
 import React from 'react'
 import ScoreGauge from './ScoreGauge'
 
-const Category = ({})
+const Category = ({ title, score }: { title: string; score: number }) => {
+return (
+  <div className="resume-summary">
+    {title}
+  </div>
+)
+}
 
 const Summary = ({ feedback }: { feedback: Feedback }) => {
   return (
@@ -14,7 +20,7 @@ const Summary = ({ feedback }: { feedback: Feedback }) => {
           <p className='text-gray-500'>This score is calculated based on the variable listed below</p>
         </div>
 
-
+       
 
       </div>
     </div>
