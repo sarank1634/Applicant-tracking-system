@@ -4,6 +4,7 @@ export default [
   route("/resume/:id", "routes/resume.tsx"),
   route("/auth", "routes/auth.tsx"),
   route("/upload", "routes/upload.tsx"),
+  route("/wipe", "routes/wipe.tsx"),
   route("*", "routes/404.tsx") // Catch-all route for unknown paths
   
 ] satisfies RouteConfig;
