@@ -20,7 +20,7 @@ const Summary = ({ feedback }: { feedback: Feedback }) => {
           <p className='text-gray-500'>This score is calculated based on the variable listed below</p>
         </div>
 
-       
+       <Category title="Tone & Style" score={ feedback.toneAndStyleScore }/>
 
       </div>
     </div>
