@@ -122,13 +122,31 @@ const upload = () => {
          console.error('AI analysis error:', error);
          console.error('Error details:', JSON.stringify(error, null, 2));
          
-         // Handle different error formats
-         const errorMessage = error?.error?.message || error?.message || 'Unknown error';
+         // Handle different error formats - check for {success: false, error: {...}} structure first
+         let errorMessage = 'Unknown error';
+         
+         if (error?.success === false && error?.error) {
+           // Handle {success: false, error: {...}} format
+           errorMessage = error.error.message || error.error.toString() || 'AI service error';
+         } else if (error?.error?.message) {
+           // Handle nested error.message
+           errorMessage = error.error.message;
+         } else if (error?.message) {
+           // Handle direct error.message
+           errorMessage = error.message;
+         } else if (typeof error === 'string') {
+           // Handle string errors
+           errorMessage = error;
+         }
+         
          console.error('Extracted error message:', errorMessage);
          
+         // Check for specific error conditions
          if (errorMessage.includes('Permission denied') || 
              errorMessage.includes('usage-limited') ||
              errorMessage.includes('Usage limit') ||
+             errorMessage.includes('rate limit') ||
+             errorMessage.includes('quota') ||
              error?.success === false) {
            setStatusText('Error: AI service temporarily unavailable. Please try again later.');
          } else {
