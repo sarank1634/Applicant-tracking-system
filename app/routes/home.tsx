@@ -13,17 +13,21 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const { auth, kv } = usePuterStore();
+  const { auth, kv, isLoading } = usePuterStore();
   const navigate = useNavigate();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loadingResumes, setLoadingResumes] = useState(false);
 
   useEffect(() => {
-    if(!auth.isAuthenticated) navigate('/auth?next=/');
-  }, [auth.isAuthenticated])
+    if(!isLoading && !auth.isAuthenticated) {
+      navigate('/auth?next=/', { replace: true });
+    }
+  }, [isLoading, auth.isAuthenticated, navigate])
 
   useEffect(() => {
     const loadResumes = async () => {
+      if (!auth.isAuthenticated) return;
+      
       setLoadingResumes(true);
 
       const resumes = (await kv.list('resume:*', true)) as KVItem[];
@@ -37,7 +41,19 @@ export default function Home() {
     }
 
     loadResumes()
-  }, []);
+  }, [auth.isAuthenticated]);
+
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return (
+      <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   return <main className="bg-[url('/images/bg-main.svg')] bg-cover">
     <Navbar />
