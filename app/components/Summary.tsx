@@ -4,7 +4,7 @@ import ScoreGauge from './ScoreGauge'
 const Category = ({ title, score }: { title: string; score: number }) => {
 return (
   <div className="resume-summary">
-    {title}
+    {title} - {score}
   </div>
 )
 }
@@ -20,7 +20,10 @@ const Summary = ({ feedback }: { feedback: Feedback }) => {
           <p className='text-gray-500'>This score is calculated based on the variable listed below</p>
         </div>
 
-       <Category title="Tone & Style" score={ feedback.toneAndStyleScore }/>
+       <Category title="Tone & Style" score={ feedback.toneAndStyle.score}/>
+       <Category title="content" score={ feedback.content.score}/>
+       <Category title="structure" score={ feedback.structure.score}/>
+       <Category title="skills " score={ feedback.skills.score}/>
 
       </div>
     </div>
