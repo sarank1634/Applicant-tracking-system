@@ -36,7 +36,7 @@ const FileUploader = ({ onFileSelect }: FileUploaderProps) => {
   return (
     <div className='w-full gradient-border'>
       <div {...getRootProps()}>
-        <input {...getInputProps()} />
+        <input {...getInputProps()} id="uploader" />
         <div className="space-y-4 cursor-pointer">
           {file ? (
             <div className='uploader-selector-file flex items-center justify-between p-3' onClick={(e) => e.stopPropagation()}>

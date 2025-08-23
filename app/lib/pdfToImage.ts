@@ -56,7 +56,7 @@ export async function convertPdfToImage(
     const page = await pdf.getPage(1);
     console.log('Page loaded successfully');
 
-    const viewport = page.getViewport({ scale: 4 });
+    const viewport = page.getViewport({ scale: 2 });
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
 
@@ -103,8 +103,8 @@ export async function convertPdfToImage(
           }
         },
         "image/png",
-        1.0
-      ); // Set quality to maximum (1.0)
+        0.8
+      ); // Reduced quality for faster processing
     });
   } catch (err) {
     console.error('PDF conversion error:', err);
