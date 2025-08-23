@@ -1,12 +1,13 @@
 import { useParams } from "react-router";
 import { resumes } from "../../constants";
 import Navbar from "../components/Navbar";
+import { Link } from "react-router";
 
 export function meta({ params }: Route.MetaArgs) {
   const resume = resumes.find(r => r.id === params.id);
   return [
-    { title: `Resume - ${resume?.companyName || 'Not Found'}` },
-    { name: "description", content: "Resume details and feedback" },
+    { title: `Resumind | ' Review'}` },
+    { name: "description", content: "Detailed overview of your resume" },
   ];
 }
 
@@ -16,10 +17,17 @@ export default function Resume() {
 
   if (!resume) {
     return (
-      <main className="bg-[url('/images/bg-main.svg')] bg-cover min-h-screen">
-        <Navbar />
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-2xl font-bold text-center">Resume not found</h1>
+      <main className="!pt-0">
+        <nav className="resume-nav">
+         <Link to="/" className="back-button"> 
+         <img src="/icons/back.svg" alt="logo" className="w-2.5 h-2.5" />
+          <span className="text-gray-800 text-sm font-semibold">Back to HomePage</span>
+    </Link>  
+        </nav>
+        <div className="flex flex-row w-full max-lg:flex-col-reverse">
+          <section className="feedback-section ">
+     
+          </section>
         </div>
       </main>
     );
